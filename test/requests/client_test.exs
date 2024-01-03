@@ -3,6 +3,7 @@ defmodule TaxJar.Requests.ClientTest do
   use TaxJar.Test.Support.HTTPCase
 
   alias TaxJar.Requests.Client
+  alias TaxJar.Requests.Error
 
   describe "post/3" do
     test "executes a POST request and returns the response", %{bypass: bypass} do
@@ -75,7 +76,7 @@ defmodule TaxJar.Requests.ClientTest do
 
     test "returns supported errors", %{bypass: bypass} do
       # These are the documented api responses.
-      for {code, expected_atom} <- [
+      for {expected_status, expected_error} <- [
             {400, :bad_request},
             {401, :unauthorized},
             {403, :forbidden},
@@ -91,15 +92,20 @@ defmodule TaxJar.Requests.ClientTest do
           ] do
         Bypass.expect_once(
           bypass,
-          &build_response(&1, ~s({"error": "oops"}), status: code)
+          &build_response(&1, ~s({"error": "oops"}), status: expected_status)
         )
 
         with_config(
           %{api_url: "localhost:#{bypass.port}"},
           fn ->
-            assert {:error, {received_atom, error}} = Client.post("/test", %{"my" => "payload"})
-            assert received_atom == expected_atom
-            assert error == %{"error" => "oops"}
+            assert {
+                     :error,
+                     %Error{error: error, status: status}
+                   } =
+                     Client.post("/test", %{"my" => "payload"})
+
+            assert status == expected_status
+            assert error == expected_error
           end
         )
       end
@@ -111,7 +117,10 @@ defmodule TaxJar.Requests.ClientTest do
       with_config(
         %{api_url: "localhost:#{bypass.port}"},
         fn ->
-          assert {:error, :econnrefused} = Client.post("/test", %{"my" => "payload"})
+          assert {
+                   :error,
+                   %Error{error: :econnrefused}
+                 } = Client.post("/test", %{"my" => "payload"})
         end
       )
 

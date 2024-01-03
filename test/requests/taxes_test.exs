@@ -2,6 +2,7 @@ defmodule TaxJar.Requests.TaxesTest do
   use ExUnit.Case
   use TaxJar.Test.Support.HTTPCase
 
+  alias TaxJar.Requests.Error
   alias TaxJar.Requests.Taxes
 
   describe "get_sales_tax_for_order/1" do
@@ -33,7 +34,8 @@ defmodule TaxJar.Requests.TaxesTest do
       with_config(
         %{api_url: "localhost:#{bypass.port}"},
         fn ->
-          assert {:error, {:bad_request, _}} = Taxes.get_sales_tax_for_order(%{"my" => "order"})
+          assert {:error, %Error{error: :bad_request}} =
+                   Taxes.get_sales_tax_for_order(%{"my" => "order"})
         end
       )
     end

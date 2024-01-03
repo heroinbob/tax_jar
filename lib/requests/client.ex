@@ -6,21 +6,7 @@ defmodule TaxJar.Requests.Client do
   - requests raise errors when json can't encode/decode.
   """
 
-  # https://developers.taxjar.com/api/reference/#errors
-  @statuses %{
-    400 => :bad_request,
-    401 => :unauthorized,
-    403 => :forbidden,
-    404 => :not_found,
-    405 => :method_not_allowed,
-    406 => :not_acceptable,
-    410 => :gone,
-    422 => :unprocessable_entity,
-    429 => :too_many_requests,
-    500 => :internal_server_error,
-    503 => :service_unavailable,
-    504 => :gateway_timeout
-  }
+  alias TaxJar.Requests.Error
 
   @doc """
   Perform a POST request to the API using the given payload.
@@ -52,10 +38,10 @@ defmodule TaxJar.Requests.Client do
         {:ok, Jason.decode!(response)}
 
       {:ok, status_code, _headers, response} ->
-        {:error, {@statuses[status_code], Jason.decode!(response)}}
+        {:error, Error.new(response, status_code)}
 
       {:error, reason} ->
-        {:error, reason}
+        {:error, Error.new(reason)}
     end
   end
 
