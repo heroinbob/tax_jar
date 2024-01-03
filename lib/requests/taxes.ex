@@ -2,11 +2,18 @@ defmodule TaxJar.Requests.Taxes do
   alias TaxJar.Requests.Client
 
   @doc """
-  Request the sales tax for the given order.
+  Request sales tax for the given order.
 
-  https://developers.taxjar.com/api/reference/#post-calculate-sales-tax-for-an-order
+  The API response is a map with the tax liability wrapped in a map with a single
+  key `"tax"`. This returns the content without the wrapper.
+
+  See [Sales Tax API](https://developers.taxjar.com/api/reference/#post-calculate-sales-tax-for-an-order)
+  for details.
   """
   def get_sales_tax_for_order(payload) when is_map(payload) do
-    Client.post("/taxes", payload)
+    case Client.post("/taxes", payload) do
+      {:ok, %{"tax" => tax}} -> {:ok, tax}
+      error -> error
+    end
   end
 end

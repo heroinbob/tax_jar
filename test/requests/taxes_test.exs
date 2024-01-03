@@ -19,11 +19,13 @@ defmodule TaxJar.Requests.TaxesTest do
         end
       )
 
+      %{"tax" => expected_payload} = Fixtures.tax_payload()
+
       with_config(
         %{api_url: "localhost:#{bypass.port}"},
         fn ->
           assert {:ok, %{} = tax} = Taxes.get_sales_tax_for_order(%{"my" => "order"})
-          assert tax == Fixtures.tax_payload()
+          assert tax == expected_payload
         end
       )
     end
