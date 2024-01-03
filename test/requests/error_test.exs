@@ -8,8 +8,8 @@ defmodule TaxJar.Requests.ErrorTest do
     test "returns a struct with :error populated" do
       assert %Error{
                decoded_response: :none,
-               error: :econnrefused,
                message: "Connection error",
+               reason: :econnrefused,
                response: :none,
                status: nil
              } = Error.new(:econnrefused)
@@ -22,8 +22,8 @@ defmodule TaxJar.Requests.ErrorTest do
 
       assert %Error{
                decoded_response: %{},
-               error: :bad_request,
                message: "No amount or line items provided",
+               reason: :bad_request,
                response: ^response,
                status: 400
              } = Error.new(response, 400)
@@ -32,8 +32,8 @@ defmodule TaxJar.Requests.ErrorTest do
     test "returns a custom error when the json can't be decoded" do
       assert %Error{
         decoded_response: :none,
-        error: :invalid_json,
         message: "blah",
+        reason: :invalid_json,
         response: "not json",
         status: 400
       }
@@ -44,8 +44,8 @@ defmodule TaxJar.Requests.ErrorTest do
     test "returns defaults when the response doesn't match a known error" do
       assert %Error{
                decoded_response: %{},
-               error: :unknown,
                message: nil,
+               reason: :unknown,
                response: "{}",
                status: 444
              } = Error.new("{}", 444)

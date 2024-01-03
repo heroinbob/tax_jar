@@ -18,8 +18,8 @@ defmodule TaxJar.Requests.Error do
   def statuses, do: @statuses
 
   defstruct [
-    :error,
     :message,
+    :reason,
     :status,
     decoded_response: :none,
     response: :none
@@ -29,8 +29,8 @@ defmodule TaxJar.Requests.Error do
   def new(reason) do
     %__MODULE__{
       decoded_response: :none,
-      error: reason,
       message: "Connection error",
+      reason: reason,
       response: :none
     }
   end
@@ -51,8 +51,8 @@ defmodule TaxJar.Requests.Error do
     # or the API changes/misbehaves then they can rely on the `status` from the response.
     %{
       decoded_response: decoded_response,
-      error: Map.get(@statuses, status, :unknown),
       message: Map.get(decoded_response, "detail"),
+      reason: Map.get(@statuses, status, :unknown),
       response: raw_response,
       status: status
     }
@@ -60,8 +60,8 @@ defmodule TaxJar.Requests.Error do
 
   defp build_attrs(_error, raw_response, status) do
     %{
-      error: :invalid_json,
       message: "The response could not be decoded.",
+      reason: :invalid_json,
       response: raw_response,
       status: status
     }

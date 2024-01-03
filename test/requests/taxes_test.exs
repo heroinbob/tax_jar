@@ -36,7 +36,7 @@ defmodule TaxJar.Requests.TaxesTest do
       with_config(
         %{api_url: "localhost:#{bypass.port}"},
         fn ->
-          assert {:error, %Error{error: :bad_request}} =
+          assert {:error, %Error{reason: :bad_request}} =
                    Taxes.get_sales_tax_for_order(%{"my" => "order"})
         end
       )

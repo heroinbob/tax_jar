@@ -100,12 +100,12 @@ defmodule TaxJar.Requests.ClientTest do
           fn ->
             assert {
                      :error,
-                     %Error{error: error, status: status}
+                     %Error{reason: reason, status: status}
                    } =
                      Client.post("/test", %{"my" => "payload"})
 
             assert status == expected_status
-            assert error == expected_error
+            assert reason == expected_error
           end
         )
       end
@@ -119,7 +119,7 @@ defmodule TaxJar.Requests.ClientTest do
         fn ->
           assert {
                    :error,
-                   %Error{error: :econnrefused}
+                   %Error{reason: :econnrefused}
                  } = Client.post("/test", %{"my" => "payload"})
         end
       )
