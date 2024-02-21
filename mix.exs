@@ -5,8 +5,10 @@ defmodule TaxJar.MixProject do
     [
       app: :tax_jar,
       deps: deps(),
+      description: "Simple Elixir library for interacting with the TaxJar API",
       elixir: "~> 1.15",
       elixirc_paths: elixirc_paths(Mix.env()),
+      package: package(),
       start_permanent: Mix.env() == :prod,
       version: "0.1.0"
     ]
@@ -31,4 +33,12 @@ defmodule TaxJar.MixProject do
 
   defp elixirc_paths(:test), do: ["lib", "test/support"]
   defp elixirc_paths(_), do: ["lib"]
+
+  defp package do
+    [
+      licenses: ["MIT"],
+      links: %{"GitHub" => "https://github.com/heroinbob/tax_jar"},
+      maintainers: ["Jeff McKenzie"]
+    ]
+  end
 end
