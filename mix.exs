@@ -26,6 +26,7 @@ defmodule TaxJar.MixProject do
     [
       {:bypass, "~> 2.1.0", only: :test},
       {:dialyxir, "~> 1.4.1", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.31.1", only: :dev, runtime: false},
       {:hackney, "~> 1.20.1"},
       {:jason, "~> 1.4.1"}
     ]
