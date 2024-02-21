@@ -24,3 +24,6 @@ tax_jar-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+
+# You can utilize a dev config locally with your own API key.
+/config/dev.exs
