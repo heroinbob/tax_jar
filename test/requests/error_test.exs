@@ -5,13 +5,13 @@ defmodule TaxJar.Requests.ErrorTest do
   alias TaxJar.Test.Support.Fixtures
 
   describe "new/1" do
-    test "returns a struct with :error populated" do
+    test "returns a struct with :reason populated" do
       assert %Error{
                decoded_response: :none,
                message: "Connection error",
                reason: :econnrefused,
                response: :none,
-               status: nil
+               status: :none
              } = Error.new(:econnrefused)
     end
   end

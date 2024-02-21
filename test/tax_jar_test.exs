@@ -82,7 +82,25 @@ defmodule TaxJarTest do
       with_config(
         %{api_url: "localhost:#{bypass.port}"},
         fn ->
-          assert {:ok, _tax} = TaxJar.get_sales_tax_for_order(%{"my" => "order"})
+          assert {
+                   :ok,
+                   %{
+                     "order_total_amount" => 10.0,
+                     "shipping" => +0.0,
+                     "taxable_amount" => 10.0,
+                     "amount_to_collect" => 0.5,
+                     "rate" => 0.05,
+                     "has_nexus" => true,
+                     "freight_taxable" => true,
+                     "tax_source" => "destination",
+                     "jurisdictions" => %{
+                       "country" => "US",
+                       "state" => "CA",
+                       "county" => "LOS ANGELES",
+                       "city" => "LOS ANGELES"
+                     }
+                   }
+                 } = TaxJar.get_sales_tax_for_order(%{"my" => "order"})
         end
       )
     end

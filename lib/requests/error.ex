@@ -1,4 +1,16 @@
 defmodule TaxJar.Requests.Error do
+  @moduledoc """
+  Context for representing an error response from the TaxJar API.
+  """
+
+  @type t :: %__MODULE__{
+          decoded_response: map() | :none,
+          message: binary() | nil,
+          reason: term(),
+          response: any() | :none,
+          status: non_neg_integer() | :none
+        }
+
   # https://developers.taxjar.com/api/reference/#errors
   @statuses %{
     400 => :bad_request,
@@ -20,13 +32,19 @@ defmodule TaxJar.Requests.Error do
   defstruct [
     :message,
     :reason,
-    :status,
+    status: :none,
     decoded_response: :none,
     response: :none
   ]
 
-  # Hackney will return a reason - usually an atom. However it's spec is `term()`.
+  @doc """
+  Build a new `Error` struct from the given reason.
+
+  This is expected when the connection isn't successful.
+  """
+  @spec new(reason :: any()) :: t()
   def new(reason) do
+    # Hackney will return a reason - usually an atom. However it's spec is `term()`.
     %__MODULE__{
       decoded_response: :none,
       message: "Connection error",
@@ -35,6 +53,12 @@ defmodule TaxJar.Requests.Error do
     }
   end
 
+  @doc """
+  Build a new `Error` struct from the given JSON response and code.
+
+  It's expected that the response is well formatted JSON.
+  """
+  @spec new(response :: binary(), status :: integer()) :: t()
   def new(response, status) when is_binary(response) do
     attrs =
       response
