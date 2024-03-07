@@ -20,8 +20,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - otp: "26.0"
-            elixir: "1.16"
+          - otp: "26.2.1"
+            elixir: "1.16.1"
             lint: true
 
     steps:
@@ -55,14 +55,14 @@ jobs:
       - name: Check for compilation warnings
         run: mix compile --force --warnings-as-errors
 
+      - name: Run tests
+        run: mix test
+
       - name: Ensure code is formatted
         run: mix format --check-formatted
-
-      - name: Ensure runtime types are correct
-        run: mix dialyzer
 
       - name: Check code consistency
         run: mix credo --strict
 
-      - name: Run tests
-        run: mix test
+      - name: Ensure runtime types are correct
+        run: mix dialyzer
