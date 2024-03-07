@@ -6,6 +6,13 @@ defmodule TaxJar.MixProject do
       app: :tax_jar,
       deps: deps(),
       description: "Simple Elixir library for interacting with the TaxJar API",
+      dialyzer: [
+        list_unused_filters: true,
+        plt_file: {:no_warn, "plts/tax_jar.plt"},
+        # Be sure that ex_unit is included. This is needed when CI runs it in
+        # the test ENV.
+        plt_add_apps: [:ex_unit]
+      ],
       elixir: "~> 1.15",
       elixirc_paths: elixirc_paths(Mix.env()),
       package: package(),

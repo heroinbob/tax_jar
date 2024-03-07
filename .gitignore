@@ -29,3 +29,6 @@ tax_jar-*.tar
 /config/dev.exs
 
 /.elixir-tools/
+
+# Dialyxer PLT files
+/plts/
