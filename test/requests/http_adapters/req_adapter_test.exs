@@ -99,7 +99,7 @@ defmodule TaxJar.Requests.HTTPAdapters.ReqAdapterTest do
             assert {
                      :error,
                      %Error{
-                       details: %{response: %Req.Response{status: ^expected_status}},
+                       details: %Req.Response{status: ^expected_status},
                        message: "foo",
                        reason: ^expected_error
                      }
@@ -127,7 +127,7 @@ defmodule TaxJar.Requests.HTTPAdapters.ReqAdapterTest do
           assert {
                    :error,
                    %Error{
-                     details: %{response: %Req.Response{status: 418}},
+                     details: %Req.Response{status: 418},
                      message: "I'm a teapot",
                      reason: :api_error
                    }

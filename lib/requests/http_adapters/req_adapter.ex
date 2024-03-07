@@ -49,7 +49,7 @@ defmodule TaxJar.Requests.HTTPAdapters.ReqAdapter do
         {
           :error,
           Error.exception(
-            details: %{response: response},
+            details: response,
             message: Map.get(body, "detail", "Request failed"),
             reason: Map.get(@statuses_lookup, status, :api_error)
           )
