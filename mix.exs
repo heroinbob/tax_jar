@@ -20,6 +20,8 @@ defmodule TaxJar.MixProject do
 
   defp deps do
     [
+      # This is only explicitly used in tests. However Hexpm
+      # requires it in production.
       {:jason, "~> 1.4.1"},
       {:req, "~> 0.4.0", optional: true},
 
