@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  MIX_ENV: test
+
+jobs:
+  test:
+    name: Test (Elixir ${{ matrix.elixir }}, OTP ${{ matrix.otp }})
+
+    runs-on: ubuntu-20.04
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - otp: "26.0"
+            elixir: "1.16"
+            lint: true
+
+    steps:
+      - name: Clone the repository
+        uses: actions/checkout@v3
+
+      - name: Install Erlang/OTP and Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          otp-version: ${{ matrix.otp }}
+          elixir-version: ${{ matrix.elixir }}
+
+      - name: Cache dependencies
+        id: cache-deps
+        uses: actions/cache@v3
+        with:
+          path: |
+            deps
+            _build
+          key: |
+            ${{ runner.os }}-mix-otp${{ matrix.otp }}-elixir${{ matrix.elixir }}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-mix-otp${{ matrix.otp }}-elixir${{ matrix.elixir }}-
+
+      - name: Install and compile dependencies
+        run: mix do deps.get, deps.compile
+
+      - name: Check for unused dependencies
+        run: mix deps.unlock --check-unused
+
+      - name: Check for compilation warnings
+        run: mix compile --force --warnings-as-errors
+
+      - name: Ensure code is formatted
+        run: mix format --check-formatted
+
+      - name: Ensure runtime types are correct
+        run: mix dialyzer
+
+      - name: Check code consistency
+        run: mix credo --strict
+
+      - name: Run tests
+        run: mix test
