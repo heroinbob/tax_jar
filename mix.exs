@@ -10,7 +10,7 @@ defmodule TaxJar.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       package: package(),
       start_permanent: Mix.env() == :prod,
-      version: "0.1.1"
+      version: "0.2.0"
     ]
   end
 
@@ -24,14 +24,15 @@ defmodule TaxJar.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:hackney, "~> 1.20.1"},
       {:jason, "~> 1.4.1"},
+      {:req, "~> 0.4.0", optional: true},
 
       # Dev Deps
       {:bypass, "~> 2.1.0", only: :test},
       {:credo, "~> 1.7.5", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.4.1", only: [:dev, :test], runtime: false},
-      {:ex_doc, "~> 0.31.1", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.31.1", only: :dev, runtime: false},
+      {:hammox, "~> 0.7", only: :test}
     ]
   end
 

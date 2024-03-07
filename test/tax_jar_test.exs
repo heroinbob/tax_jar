@@ -1,5 +1,4 @@
 defmodule TaxJarTest do
-  use ExUnit.Case
   use TaxJar.Test.Support.HTTPCase
 
   describe "get_api_key/0" do
@@ -76,33 +75,34 @@ defmodule TaxJarTest do
   end
 
   describe "get_tax_rates_for_order/1" do
-    test "delegates to TaxJar.Requests.Taxes", %{bypass: bypass} do
-      Bypass.expect_once(bypass, &ok_tax_response/1)
+    setup :verify_on_exit!
 
-      with_config(
-        %{api_url: "localhost:#{bypass.port}"},
-        fn ->
-          assert {
-                   :ok,
-                   %{
-                     "order_total_amount" => 10.0,
-                     "shipping" => +0.0,
-                     "taxable_amount" => 10.0,
-                     "amount_to_collect" => 0.5,
-                     "rate" => 0.05,
-                     "has_nexus" => true,
-                     "freight_taxable" => true,
-                     "tax_source" => "destination",
-                     "jurisdictions" => %{
-                       "country" => "US",
-                       "state" => "CA",
-                       "county" => "LOS ANGELES",
-                       "city" => "LOS ANGELES"
-                     }
-                   }
-                 } = TaxJar.get_sales_tax_for_order(%{"my" => "order"})
-        end
+    test "delegates to TaxJar.Requests.Taxes" do
+      expect(
+        MockHTTPAdapter,
+        :post,
+        fn _, _, _ -> {:ok, Fixtures.tax_payload()} end
       )
+
+      assert {
+               :ok,
+               %{
+                 "order_total_amount" => 10.0,
+                 "shipping" => +0.0,
+                 "taxable_amount" => 10.0,
+                 "amount_to_collect" => 0.5,
+                 "rate" => 0.05,
+                 "has_nexus" => true,
+                 "freight_taxable" => true,
+                 "tax_source" => "destination",
+                 "jurisdictions" => %{
+                   "country" => "US",
+                   "state" => "CA",
+                   "county" => "LOS ANGELES",
+                   "city" => "LOS ANGELES"
+                 }
+               }
+             } = TaxJar.get_sales_tax_for_order(%{"my" => "order"})
     end
   end
 end

@@ -1,130 +1,69 @@
 defmodule TaxJar.Requests.ClientTest do
-  use ExUnit.Case
   use TaxJar.Test.Support.HTTPCase
 
   alias TaxJar.Requests.Client
-  alias TaxJar.Requests.Error
 
-  describe "post/3" do
-    test "executes a POST request and returns the response", %{bypass: bypass} do
-      Bypass.expect_once(
-        bypass,
-        fn conn ->
-          assert "POST" == conn.method
-          assert "/cool_path" == conn.request_path
-          assert {:ok, body, _conn} = Plug.Conn.read_body(conn)
-          assert body == ~s({"my":"payload"})
+  defmodule OtherHTTPAdapter do
+    @behaviour TaxJar.Requests.HTTPBehaviour
 
-          ok_tax_response(conn)
+    @impl TaxJar.Requests.HTTPBehaviour
+    def post(path, body, opts) do
+      {:ok, %{body: body, opts: opts, path: path}}
+    end
+  end
+
+  describe "post/2" do
+    test "delegates to the configured HTTP adapter and returns the response" do
+      expect(
+        MockHTTPAdapter,
+        :post,
+        fn path, body, opts ->
+          assert path == "/cool_path"
+          assert body == %{"my" => "payload"}
+          assert opts == []
+
+          {:ok, %{rad: "stuff"}}
         end
       )
 
+      assert {:ok, %{rad: "stuff"}} = Client.post("/cool_path", %{"my" => "payload"})
+    end
+
+    test "the http adapter can be configured at runtime" do
       with_config(
-        %{api_url: "localhost:#{bypass.port}"},
+        %{http_adapter: OtherHTTPAdapter},
         fn ->
-          assert {:ok, tax} = Client.post("/cool_path", %{"my" => "payload"})
-          assert tax == Fixtures.tax_payload()
+          assert {
+                   :ok,
+                   %{
+                     body: %{"my" => "payload"},
+                     opts: [compress_body: true],
+                     path: "/cool_path"
+                   }
+                 } = Client.post("/cool_path", %{"my" => "payload"}, compress_body: true)
         end
       )
     end
   end
 
-  describe "request/4" do
-    test "executes the request returns the decoded JSON response", %{bypass: bypass} do
-      Bypass.expect_once(
-        bypass,
-        fn conn ->
-          assert {"x-api-version", "2022-01-24"} in conn.req_headers
-          assert {"authorization", "Bearer test-key"} in conn.req_headers
-          assert {"content-type", "application/json"} in conn.req_headers
-          assert "GET" == conn.method
-          assert "/cool_path" == conn.request_path
-          assert {:ok, body, _conn} = Plug.Conn.read_body(conn)
-          assert body == ~s({"my":"payload"})
+  describe "post/3" do
+    test "passes the options to the http adapter" do
+      expect(
+        MockHTTPAdapter,
+        :post,
+        fn _path, _body, opts ->
+          assert opts == [compressed: true]
 
-          ok_tax_response(conn)
+          {:ok, %{rad: "stuff"}}
         end
       )
 
-      with_config(
-        %{api_url: "localhost:#{bypass.port}"},
-        fn ->
-          assert {:ok, %{} = tax} = Client.request("GET", "/cool_path", %{"my" => "payload"})
-          assert tax == Fixtures.tax_payload()
-        end
-      )
-    end
-
-    test "raises an exception when the response can't be decoded", %{bypass: bypass} do
-      Bypass.expect_once(
-        bypass,
-        fn conn -> build_response(conn, "whoops") end
-      )
-
-      assert_raise(
-        Jason.DecodeError,
-        fn ->
-          with_config(
-            %{api_url: "localhost:#{bypass.port}"},
-            fn ->
-              Client.post("/test", %{"my" => "payload"})
-            end
-          )
-        end
-      )
-    end
-
-    test "returns supported errors", %{bypass: bypass} do
-      # These are the documented api responses.
-      for {expected_status, expected_error} <- [
-            {400, :bad_request},
-            {401, :unauthorized},
-            {403, :forbidden},
-            {404, :not_found},
-            {405, :method_not_allowed},
-            {406, :not_acceptable},
-            {410, :gone},
-            {422, :unprocessable_entity},
-            {429, :too_many_requests},
-            {500, :internal_server_error},
-            {503, :service_unavailable},
-            {504, :gateway_timeout}
-          ] do
-        Bypass.expect_once(
-          bypass,
-          &build_response(&1, ~s({"error": "oops"}), status: expected_status)
-        )
-
-        with_config(
-          %{api_url: "localhost:#{bypass.port}"},
-          fn ->
-            assert {
-                     :error,
-                     %Error{reason: reason, status: status}
-                   } =
-                     Client.post("/test", %{"my" => "payload"})
-
-            assert status == expected_status
-            assert reason == expected_error
-          end
-        )
-      end
-    end
-
-    test "returns the connection error", %{bypass: bypass} do
-      Bypass.down(bypass)
-
-      with_config(
-        %{api_url: "localhost:#{bypass.port}"},
-        fn ->
-          assert {
-                   :error,
-                   %Error{reason: :econnrefused}
-                 } = Client.post("/test", %{"my" => "payload"})
-        end
-      )
-
-      on_exit(fn -> Bypass.up(bypass) end)
+      assert {:ok, %{rad: "stuff"}} =
+               Client.post(
+                 "/cool_path",
+                 %{"my" => "payload"},
+                 compressed: true
+               )
     end
   end
 end

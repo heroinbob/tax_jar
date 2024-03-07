@@ -3,15 +3,13 @@ defmodule TaxJar.Test.Support.HTTPCase do
 
   using do
     quote do
+      import Hammox
       import TaxJar.Test.Support.Context
-      import TaxJar.Test.Support.Requests
 
+      alias TaxJar.Requests.HTTPAdapters.MockHTTPAdapter
       alias TaxJar.Test.Support.Fixtures
-    end
-  end
 
-  setup do
-    bypass = Bypass.open()
-    {:ok, bypass: bypass}
+      setup :verify_on_exit!
+    end
   end
 end
