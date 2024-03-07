@@ -24,11 +24,14 @@ defmodule TaxJar.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:bypass, "~> 2.1.0", only: :test},
-      {:dialyxir, "~> 1.4.1", only: [:dev, :test], runtime: false},
-      {:ex_doc, "~> 0.31.1", only: :dev, runtime: false},
       {:hackney, "~> 1.20.1"},
-      {:jason, "~> 1.4.1"}
+      {:jason, "~> 1.4.1"},
+
+      # Dev Deps
+      {:bypass, "~> 2.1.0", only: :test},
+      {:credo, "~> 1.7.5", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.4.1", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.31.1", only: :dev, runtime: false}
     ]
   end
 
