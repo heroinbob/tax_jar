@@ -1,4 +1,9 @@
 defmodule TaxJar.Test.Support.HTTPCase do
+  @moduledoc """
+  ExUnit.CaseTemplate for testing TaxJar requests.
+
+  Use this when you need to work with the MockHTTPAdapter.
+  """
   use ExUnit.CaseTemplate
 
   using do

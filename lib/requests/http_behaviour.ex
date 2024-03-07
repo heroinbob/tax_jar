@@ -1,4 +1,7 @@
 defmodule TaxJar.Requests.HTTPBehaviour do
+  @moduledoc """
+  Behaviour to define an HTTP adapter for the TaxJar API.
+  """
   alias TaxJar.Requests.Error
 
   @doc """

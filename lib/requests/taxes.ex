@@ -1,4 +1,7 @@
 defmodule TaxJar.Requests.Taxes do
+  @moduledoc """
+  All the TaxJar tax API endpoints are defined in this module.
+  """
   alias TaxJar.Requests.Client
   alias TaxJar.Requests.Error
 
