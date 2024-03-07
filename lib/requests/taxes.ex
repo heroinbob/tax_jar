@@ -1,5 +1,9 @@
 defmodule TaxJar.Requests.Taxes do
+  @moduledoc """
+  All the TaxJar tax API endpoints are defined in this module.
+  """
   alias TaxJar.Requests.Client
+  alias TaxJar.Requests.Error
 
   @doc """
   Request sales tax for the given order.
@@ -10,7 +14,7 @@ defmodule TaxJar.Requests.Taxes do
   See [Sales Tax API](https://developers.taxjar.com/api/reference/#post-calculate-sales-tax-for-an-order)
   for details.
   """
-  @spec get_sales_tax_for_order(map()) :: {:ok, map()} | {:error, any()}
+  @spec get_sales_tax_for_order(map()) :: {:ok, map()} | {:error, Error.t()}
   def get_sales_tax_for_order(payload) when is_map(payload) do
     case Client.post("/taxes", payload) do
       {:ok, %{"tax" => tax}} -> {:ok, tax}

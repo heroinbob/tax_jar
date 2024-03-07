@@ -4,28 +4,17 @@ A simple Elixir library for interacting with the [TaxJar API](https://developers
 
 ## Installation
 
-Once published you can install by adding `tax_jar` to your list of dependencies in `mix.exs`:
+You can install by adding `tax_jar` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:tax_jar, "~> 0.1.0"}
+    {:tax_jar, "~> 0.2.0"}
   ]
 end
 ```
 
-For now you must add the git repository to your  `mix.exs` dependencies:
-
-```elixir
-
-def deps do
-  [
-    {:tax_jar, git: "https://github.com/heroinbob/tax_jar.git"}
-  ]
-end
-```
-
-Once published, the docs can be found at <https://hexdocs.pm/tax_jar>.
+The docs can be found at <https://hexdocs.pm/tax_jar>.
 
 ## Configuration
 
@@ -36,4 +25,14 @@ config :tax_jar,
     api_key: "YOUR_API_KEY",
     api_version: "2024-01-22",
     mode: :production
+```
+
+## HTTP Adapters
+
+This library uses the [Req](https://hexdocs.pm/req) library for the HTTP adapter. However your project
+may require something different. Feel free to implement your own adapter by using the `TaxJar.Requests.HTTPBehavior`
+and then configure it using the `:http_adapter` key in your config.
+
+```elixir
+config :tax_jar, http_adapter: YourApp.HTTPAdapter
 ```

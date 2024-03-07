@@ -1,4 +1,6 @@
 defmodule TaxJar.Test.Support.Fixtures do
+  @moduledoc false
+
   @tax_response ~s(
     {
       "tax": {

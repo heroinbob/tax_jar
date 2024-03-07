@@ -1,4 +1,8 @@
 defmodule TaxJar.Test.Support.Context do
+  @moduledoc """
+  Helper functions for changing the runtime configuration during a test.
+  """
+
   @doc """
   Execute the given function using the given config overrides.
 

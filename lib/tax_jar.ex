@@ -9,7 +9,10 @@ defmodule TaxJar do
   - `:api_key` - The API auth key for your account.
   - `:api_url` - (Optional) If you want to override the default url for the current env.
   - `:api_version` - Must be a valid TaxJar API version. Default is `"2022-01-24"`.
-  - `:mode` - (Optional) You can explicitly specify the mode as `:production` or `:sandbox`. The default is `:sandbox`. This will also control which url is used.
+  - `:http_adapter` - Must be a module that implements the `TaxJar.Requests.HTTPBehaviour` protocol.
+                      Default is `TaxJar.Requests.HTTPAdapters.ReqAdapter`.
+  - `:mode` - (Optional) You can explicitly specify the mode as `:production` or `:sandbox`.
+              The default is `:sandbox`. This will also control which url is used.
   """
 
   @default_api_version "2022-01-24"
