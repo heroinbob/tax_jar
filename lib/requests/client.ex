@@ -16,6 +16,8 @@ defmodule TaxJar.Requests.Client do
   """
   @behaviour TaxJar.Requests.HTTPBehaviour
 
+  @default_http_adapter TaxJar.Requests.HTTPAdapters.ReqAdapter
+
   @doc """
   Perform a POST request to the API using the given payload.
 
@@ -26,5 +28,5 @@ defmodule TaxJar.Requests.Client do
     http_adapter().post(path, body, opts)
   end
 
-  defp http_adapter, do: Application.fetch_env!(:tax_jar, :http_adapter)
+  defp http_adapter, do: Application.get_env(:tax_jar, :http_adapter, @default_http_adapter)
 end
