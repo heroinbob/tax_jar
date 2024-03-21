@@ -9,7 +9,7 @@ You can install by adding `tax_jar` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:tax_jar, "~> 0.2.0"}
+    {:tax_jar, "~> 0.2.1"}
   ]
 end
 ```
