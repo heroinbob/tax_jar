@@ -29,9 +29,10 @@ config :tax_jar,
 
 ## HTTP Adapters
 
-This library uses the [Req](https://hexdocs.pm/req) library for the HTTP adapter. However your project
-may require something different. Feel free to implement your own adapter by using the `TaxJar.Requests.HTTPBehavior`
-and then configure it using the `:http_adapter` key in your config.
+This library provides the [Req](https://hexdocs.pm/req) library for the HTTP adapter if you decide to rely
+on the optional `Req` dependency. However your project may require something different. Feel free to
+implement your own adapter by using the `TaxJar.Requests.HTTPBehavior` and then configure it using the
+`:http_adapter` key in your config.
 
 ```elixir
 config :tax_jar, http_adapter: YourApp.HTTPAdapter
