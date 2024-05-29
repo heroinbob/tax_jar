@@ -17,7 +17,7 @@ defmodule TaxJar.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       package: package(),
       start_permanent: Mix.env() == :prod,
-      version: "0.2.1"
+      version: "0.3.0"
     ]
   end
 
