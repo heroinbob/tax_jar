@@ -50,19 +50,23 @@ defmodule TaxJar.Requests.HTTPAdapters.ReqAdapterTest do
       )
     end
 
-    test "raises an exception when the response can't be decoded", %{bypass: bypass} do
+    test "Returns an error when the response can't be decoded", %{bypass: bypass} do
       Bypass.expect_once(
         bypass,
         fn conn -> build_response(conn, "whoops") end
       )
 
-      assert_raise(
-        Jason.DecodeError,
+      with_config(
+        %{api_url: "http://localhost:#{bypass.port}"},
         fn ->
-          with_config(
-            %{api_url: "http://localhost:#{bypass.port}"},
-            fn -> ReqAdapter.post("/test", %{"my" => "payload"}) end
-          )
+          assert {
+                   :error,
+                   %Error{
+                     details: %Jason.DecodeError{},
+                     message: "unexpected byte at position 0:" <> _rest,
+                     reason: :json_decode_error
+                   }
+                 } = ReqAdapter.post("/test", %{"my" => "payload"})
         end
       )
     end

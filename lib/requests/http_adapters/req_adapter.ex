@@ -38,6 +38,11 @@ if match?({:module, Req}, Code.ensure_compiled(Req)) do
     - `:message`: The error message as defined in the API. Default is `"Request failed"`.
     - `:reason`: An atom representing the status code. See `TaxJar.Requests.Error.statuses_lookup`.
                  Default is `:api_error` if the status is outside what the API supports.
+
+    ### JSON Decoding Errors
+
+    When the response can't be decoded then the error struct is provided as the `:details` attribute
+    and the reason will be `:json_decode_error`.
     """
     @impl TaxJar.Requests.HTTPBehaviour
     def post(path, body, opts \\ []) when is_map(body) do
@@ -65,6 +70,16 @@ if match?({:module, Req}, Code.ensure_compiled(Req)) do
             Error.exception(
               message: Exception.message(exception),
               reason: reason
+            )
+          }
+
+        {:error, %Jason.DecodeError{} = error} ->
+          {
+            :error,
+            Error.exception(
+              details: error,
+              message: Exception.message(error),
+              reason: :json_decode_error
             )
           }
       end

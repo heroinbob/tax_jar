@@ -30,7 +30,7 @@ defmodule TaxJar.MixProject do
       # This is only explicitly used in tests. However Hexpm
       # requires it in production.
       {:jason, "~> 1.4.1"},
-      {:req, "~> 0.4.0", optional: true},
+      {:req, "~> 0.5.0", optional: true},
 
       # Dev Deps
       {:bypass, "~> 2.1.0", only: :test},
