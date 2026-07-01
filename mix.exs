@@ -1,8 +1,6 @@
 defmodule TaxJar.MixProject do
   use Mix.Project
 
-  def version, do: @version
-
   def project do
     [
       app: :tax_jar,
