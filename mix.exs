@@ -1,6 +1,8 @@
 defmodule TaxJar.MixProject do
   use Mix.Project
 
+  def version, do: @version
+
   def project do
     [
       app: :tax_jar,
@@ -13,11 +15,11 @@ defmodule TaxJar.MixProject do
         # the test ENV.
         plt_add_apps: [:ex_unit]
       ],
-      elixir: "~> 1.15",
+      elixir: "~> 1.18",
       elixirc_paths: elixirc_paths(Mix.env()),
       package: package(),
       start_permanent: Mix.env() == :prod,
-      version: "0.3.0"
+      version: "0.4.0"
     ]
   end
 
@@ -29,15 +31,15 @@ defmodule TaxJar.MixProject do
     [
       # This is only explicitly used in tests. However Hexpm
       # requires it in production.
-      {:jason, "~> 1.4.1"},
-      {:req, "~> 0.5.0", optional: true},
+      {:jason, ">= 1.4.1"},
+      {:req, ">= 0.5.0", optional: true},
 
       # Dev Deps
-      {:bypass, "~> 2.1.0", only: :test},
-      {:credo, "~> 1.7.5", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.4.1", only: [:dev, :test], runtime: false},
-      {:ex_doc, "~> 0.31.1", only: :dev, runtime: false},
-      {:hammox, "~> 0.7", only: :test}
+      {:bypass, ">= 2.1.0", only: :test},
+      {:credo, ">= 1.7.5", only: [:dev, :test], runtime: false},
+      {:dialyxir, ">= 1.4.1", only: [:dev, :test], runtime: false},
+      {:ex_doc, ">= 0.31.0", only: :dev, runtime: false},
+      {:hammox, ">= 0.7.0", only: :test}
     ]
   end
 
