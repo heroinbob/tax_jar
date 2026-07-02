@@ -14,14 +14,14 @@ jobs:
   test:
     name: Test (Elixir ${{ matrix.elixir }}, OTP ${{ matrix.otp }})
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
         include:
-          - otp: "26.2.1"
-            elixir: "1.16.1"
+          - otp: "28.3,2"
+            elixir: "1.19.5"
             lint: true
 
     steps:
